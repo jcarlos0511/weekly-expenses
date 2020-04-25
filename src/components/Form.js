@@ -1,27 +1,44 @@
 import React, { useState } from "react";
+import Error from "./Error";
+import shortid from "shortid";
 
-const Form = () => {
+const Form = ({ addNewExpense }) => {
   // Define states
   const [name, saveName] = useState("");
   const [quantity, saveQuantity] = useState(0);
+  const [error, saveError] = useState(false);
 
   // When the user adds an expense
   const addExpense = (e) => {
     e.preventDefault();
 
     // Validate
-
-    // Build spending
+    if (quantity < 1 || isNaN(quantity) || name.trim() === "") {
+      saveError(true);
+      return;
+    }
+    saveError(false);
+    // Building 'expense'
+    const expense = {
+      id: shortid.generate(),
+      name,
+      quantity,
+    };
 
     // Pass the expense to main component
+    addNewExpense(expense);
 
     // Reset form
+    saveName("");
+    saveQuantity(0);
   };
 
   return (
     <form onSubmit={addExpense}>
       <h2>Add your expenses</h2>
-
+      {error ? (
+        <Error message="Both fields are required or incorrect budget" />
+      ) : null}
       <div>
         <label>Expense name</label>
         <input
