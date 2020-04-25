@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Error from "./Error";
 
-const Question = () => {
+const Question = ({ saveBudget, saveRemaining, updateQuestion }) => {
   // Define states
   const [quantity, saveQuantity] = useState(0);
   const [error, saveError] = useState(false);
@@ -23,6 +23,9 @@ const Question = () => {
 
     // Validation accepted
     saveError(false);
+    saveBudget(quantity);
+    saveRemaining(quantity);
+    updateQuestion(false);
   };
 
   return (
@@ -30,17 +33,19 @@ const Question = () => {
       <h2>Put your budget</h2>
       {error ? <Error message="Incorrect budget" /> : null}
       <form onSubmit={addBudget}>
-        <input
-          type="number"
-          className="u-full-width"
-          placeholder="Put your budget"
-          onChange={defineBudget}
-        />
-        <input
-          type="submit"
-          className="button-primary u-full-width"
-          value="Define budget"
-        />
+        <div className="row">
+          <input
+            type="number"
+            className="one-half column u-full-width"
+            placeholder="Put your budget"
+            onChange={defineBudget}
+          />
+          <input
+            type="submit"
+            className="one-half column button-primary u-full-width"
+            value="Define budget"
+          />
+        </div>
       </form>
     </Fragment>
   );
