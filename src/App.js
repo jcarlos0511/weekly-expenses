@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Question from "./components/Question";
 import Form from "./components/Form";
 import List from "./components/List";
+import BudgetControl from "./components/BudgetControl";
 
 function App() {
   // Define state
@@ -9,11 +10,24 @@ function App() {
   const [remaining, saveRemaining] = useState(0);
   const [showquestion, updateQuestion] = useState(true);
   const [expenses, saveExpenses] = useState([]);
+  const [expense, saveExpense] = useState({});
+  const [createexpense, saveCreateExpense] = useState(false);
 
-  // When adding a new expense
-  const addNewExpense = (expense) => {
-    saveExpenses([...expenses, expense]);
-  };
+  // UseEffect which updates the remaining
+
+  useEffect(() => {
+    if (createexpense) {
+      // Add a new budget
+      saveExpenses([...expenses, expense]);
+
+      // Subtracting from the current budget
+      const remainingBudget = remaining - expense.quantity;
+      saveRemaining(remainingBudget);
+
+      //Reset to false
+      saveCreateExpense(false);
+    }
+  }, [createexpense, expense, expenses, remaining]);
 
   return (
     <div className="container">
@@ -29,10 +43,14 @@ function App() {
           ) : (
             <div className="row">
               <div className="one-half column">
-                <Form addNewExpense={addNewExpense} />
+                <Form
+                  saveExpense={saveExpense}
+                  saveCreateExpense={saveCreateExpense}
+                />
               </div>
               <div className="one-half column">
                 <List expenses={expenses} />
+                <BudgetControl budget={budget} remaining={remaining} />
               </div>
             </div>
           )}
